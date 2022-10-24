@@ -1,3 +1,11 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  padding: 0;
+}
+
 .App {
   text-align: center;
 }
@@ -35,4 +43,50 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.good-tile {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: blue;
+  width: 40px;
+  height: 40px;
+  transition: 0.7s;
+}
+
+.bad-tile {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: red;
+  width: 40px;
+  height: 40px;
+  transition: 0.7s;
+}
+
+#header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px;
+}
+
+#header h2 {
+  display: inline;
+}
+
+#game-board-container {
+  position: relative;
+  display: block;
+  background-color: mediumpurple;
+  width: 400px;
+  padding: 50px;
+  margin: 0 auto;
+}
+
+#game-board {
+  width: 300px;
+  height: 250px;
+  background-color: white;
 }
