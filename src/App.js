@@ -19,7 +19,7 @@ function dec_to_hex(dec_param, hex) {
 	}
 
 	// decimals converted to hex must be two characters long so 'f' becomes '0f'
-	return hex_code.length === 2 ? hex_code : "0" + hex_code //212
+	return hex_code.length === 2 ? hex_code : "0" + hex_code
 }
 
 // Accepts an array of rgb color code i.e [rr, gg, bb] as it's only argument,
