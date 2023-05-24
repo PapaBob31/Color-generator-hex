@@ -3,8 +3,7 @@ import "./index.css"
 
 function dec_to_hex(dec_param, hex) {
 	// Maps a decimal in the range 10 to 15 to it's hex format
-	// using the difference between the decimal and 9 as a key
-  const mapping = {1: "a", 2: "b", 3: "c", 4: "d", 5: "e", 6: "f"}
+  const mapping = {10: "a", 11: "b", 12: "c", 13: "d", 14: "e", 15: "f"}
 
 	const dec = Math.round(dec_param)
 	let remainder = dec % 16
@@ -13,7 +12,7 @@ function dec_to_hex(dec_param, hex) {
 
 	// concatenates the hex equivalent of remainders greater than 9
 	// or the string equivalent if otherwise to the hex string variable
-	hex_code = ((remainder - 9) > 0 ? mapping[remainder - 9] : remainder.toString()) + hex_code
+	hex_code = (remainder > 9 ? mapping[remainder] : remainder.toString()) + hex_code
 
 	if (quotient !== 0) {
 		return dec_to_hex(quotient, hex_code)
@@ -36,7 +35,7 @@ function rgb_to_hex(rgb_list) {
 
 // Converts an hexadecimal color code to an array of rgb color code i.e [rr, gg, bb] and returns it 0c0c
 function hex_to_rgb(hex_color) {
-	// Maps an hexadecimal in the range 10 to 15 to it's decimal format
+	// Maps an hexadecimal in the range a to f to it's decimal format
 	const mapping = {"a": 10, "b": 11, "c": 12, "d": 13, "e": 14, "f": 15}
 
 	const rgb_arr = []
@@ -48,7 +47,7 @@ function hex_to_rgb(hex_color) {
 	return rgb_arr
 }
 
-function get_d_index(list, item) {
+function get_index(list, item) {
 	for (let i=0; i<3; i++) {
 		if (list[i] === item) {
 			return i
@@ -72,19 +71,18 @@ function generatedColors(color_variant, increments, d_index, color) {
 		if (n === 20) break;
 
 		for (let i=0; i<3; i++) {
-			color_variant[i] += increments[i] // create a color component's color variation
-			if (color_variant[i] === 254.5) { // edge case. occurs only when increment[d_index] = 12.25
+			color_variant[i] += increments[i] // Create a color component's color variation
+			if (color_variant[i] === 254.5) { // Edge case. occurs only when increment[d_index] = 12.25
 			// It causes the color component to be rounded to 255 at second to the last element instead of last element
 				color_variant[i] = 254
 			}
 			if (color_variant[i] > 255) { // The last increment result will almost always be greater than 255
 				color_variant[i] = 255
 			}
-			if (n === 9 && increments[d_index] === 25.5) {
+			if (n === 9 && increments[d_index] === 25.5) { // The dominant color component reaches 255 under this conditions
 				if (i !== d_index) {
-					// The dominant color component is at 255 already so we must change 
-					// other color components increments since they are relative to 255
-					increments[i] = (255 - color_variant[i])/10
+					// Their increments change cos they are relative to the dominant color component that can't increase again
+					increments[i] = (255 - color_variant[i])/10 
 				}
 			}
 		}
@@ -98,10 +96,10 @@ function ColorVariations({color}) {
 	let rgb_color_list = hex_to_rgb(color) // Makes the color components easier to perform calculations on
 	let sorted_copy = ([...rgb_color_list]).sort((a, b) => (a-b))  // sorts rgb_color_list in ascending order
 	let dominant_color = sorted_copy[2]
-	let d_index = get_d_index(rgb_color_list, dominant_color)
+	let d_index = get_index(rgb_color_list, dominant_color)
 
-	// At each of it's d_indexes is the increment used to generate variations of 
-	// a color component at that same d_index in rgb_color_list
+	// At each of it's indexes is the increment used to generate variations of 
+	// a color component at that same index in rgb_color_list
 	let increments = Array(3); 
 	let color_variant = Array(3)
 
@@ -119,7 +117,7 @@ function ColorVariations({color}) {
 		if (dominant_color === 0) { // Prevents division by zero 
 			increments[i] = increments[d_index]
 		}else {
-			// increments are relative to the dominant color component's increment
+			// Other color components increments are relative to the dominant color component's increment
 			increments[i] = (rgb_color_list[i] / dominant_color)*increments[d_index]
 		}
 		color_variant[i] = color_variant[d_index] * (rgb_color_list[i] / dominant_color) // darkest variation of the color component
