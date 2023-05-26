@@ -182,7 +182,7 @@ export default function ColorSelection() {
 				<h3>Color Generator</h3>
 				<form onSubmit={handleFormSubmit}>
 					<input type="color" ref={color_input} onChange={setTextInput} name="color"/>
-					<input type="text" ref={input_ref} maxLength="7" placeholder="hex color code format"/>
+					<input type="text" ref={input_ref} maxLength="7" placeholder="hex color code"/>
 					<button type="submit" style={{border: `3px solid ${color}`}}>Submit</button>
 				</form>
 				<Info/>
