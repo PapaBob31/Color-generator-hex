@@ -103,7 +103,7 @@ function ColorVariations({color}) {
 	let increments = Array(3); 
 	let color_variant = Array(3)
 
-	if ((dominant_color - sorted_copy[1]) < 15 && (dominant_color - sorted_copy[0]) < 15) {
+	if ((dominant_color - sorted_copy[0]) < 15) {
 		increments[d_index] = 12.75; // increment for the dominant color -> 5% of 255
 	}else {
 		increments[d_index] = 25.5; // increment for the dominant color -> 10% of 255
@@ -116,14 +116,47 @@ function ColorVariations({color}) {
 		if (i === d_index) {continue}
 		if (dominant_color === 0) { // Prevents division by zero 
 			increments[i] = increments[d_index]
+			color_variant[i] = color_variant[d_index] // darkest variation of the color component
 		}else {
 			// Other color components increments are relative to the dominant color component's increment
 			increments[i] = (rgb_color_list[i] / dominant_color)*increments[d_index]
+			color_variant[i] = color_variant[d_index] * (rgb_color_list[i] / dominant_color) // darkest variation of the color component
 		}
-		color_variant[i] = color_variant[d_index] * (rgb_color_list[i] / dominant_color) // darkest variation of the color component
 	}
-	return generatedColors(color_variant, increments, d_index, color);		
+	return generatedColors(color_variant, increments, d_index, color);
 }
+
+
+function Info() {
+	const [info_visibility, setVisibility] = useState("hidden")
+	let info_ref = useRef(null)
+
+	function show_info(e) {
+		if (info_visibility === "hidden") {
+			e.stopPropagation();
+			setVisibility("shown");
+			document.addEventListener("click", hide_info); 
+		}
+	}
+
+	function hide_info(e) {
+		if (e.target !== info_ref.current) {
+			document.removeEventListener("click", hide_info);
+			setVisibility("hidden");
+		}
+	}
+
+	return (
+		<div className="info-container">
+			<img src="icons/info.svg" alt="info-icon" onClick={show_info}/>
+			<span className={info_visibility} ref={info_ref}>
+				This app generates and displays 20 different colors of similar hues to the 
+  			color provided as input for the app. It also displays the color provided as input.
+  		</span>
+		</div>
+	)
+}
+
 
 export default function ColorSelection() {
 	const [color, setColor] = useState("")
@@ -131,7 +164,7 @@ export default function ColorSelection() {
 	let input_ref = useRef(null)
 	let regex = /^(#{1}[0-9a-zA-Z]{6})$/
 
-	function handleFormSUbmit(e) {
+	function handleFormSubmit(e) {
 		e.preventDefault();
 		if (regex.test(input_ref.current.value)) {
 			color_input.current.value = input_ref.current.value.toLowerCase()
@@ -142,14 +175,18 @@ export default function ColorSelection() {
 	function setTextInput(e) {
 		input_ref.current.value = color_input.current.value;
 	}
-	
+
 	return (
 		<>
-			<form onSubmit={handleFormSUbmit}>
-				<input type="color" ref={color_input} onChange={setTextInput} name="color"/>
-				<input type="text" ref={input_ref} maxLength="7" placeholder="hex color code format"/>
-				<button type="submit" style={{border: `3px solid ${color}`}}>Submit</button>
-			</form>
+			<header>
+				<h3>Color Generator</h3>
+				<form onSubmit={handleFormSubmit}>
+					<input type="color" ref={color_input} onChange={setTextInput} name="color"/>
+					<input type="text" ref={input_ref} maxLength="7" placeholder="hex color code format"/>
+					<button type="submit" style={{border: `3px solid ${color}`}}>Submit</button>
+				</form>
+				<Info/>
+			</header>
 			<section id="color-section">
 				<ColorVariations color={color}/>
 			</section>
