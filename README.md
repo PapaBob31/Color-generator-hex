@@ -1,6 +1,6 @@
 # Color Generator React app
 
-Web app that generates light and dark variations of a color.
+Web app that generates light and dark variations of a color. [Live Site](https://color-variations.netlify.app/).
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
